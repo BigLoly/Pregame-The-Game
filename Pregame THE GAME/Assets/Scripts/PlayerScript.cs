@@ -1,24 +1,23 @@
-using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 using UnityEngine.Splines.Interpolators;
+using UnityEngine.Timeline;
 
 public class PlayerScript : MonoBehaviour
 {
     [SerializeField] float moveSpeed; //Player Stats
     [SerializeField] float mouseSensitivity;
-    public float drunkinessLevel = 0f; //Public so animator controller can use this for blendtrees
+    [SerializeField] float drunkinessLevel = 0f; //Public so animator controller can use this for blendtrees
 
-    [SerializeField] private KeyCode drinkButton; //User Interactions
-    [SerializeField] private Transform cameraTransform;
-    [SerializeField] private Transform playerTransform;
+    [SerializeField] KeyCode drinkButton; //User Interactions
+    [SerializeField] Transform cameraTransform;
+    [SerializeField] Transform playerTransform;
 
-    public LiquidScript liquidScript; //liquidScript
-    [SerializeField] private float drinkRate;
+    public LiquidScript liquidScript; //liquidScript found in canvas > AlcoholMeter
+    [SerializeField] float drinkRate;
 
-    public event Action drinking; //For animations
-    [SerializeField] private Animator animator;
+    [SerializeField] Animator animator; //For animations
 
     private void Start()
     {
@@ -41,10 +40,12 @@ public class PlayerScript : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
-        Vector3 direction = forward * z + right * x;
+        Vector3 Rawdirection = (forward * z + right * x);
+        Vector3 direction = Rawdirection.normalized;
         transform.position += direction * moveSpeed * Time.deltaTime;
 
-        animator.SetFloat("velocity", new Vector3 (direction.x, 0, direction.z).magnitude); //Sets isMoving float in anim controller
+        float velocityMagnitude = Mathf.Clamp01(Rawdirection.magnitude);
+        animator.SetFloat("velocity", velocityMagnitude); //Sets isMoving float in anim controller
 
     } //Simple WASD movement
 
@@ -62,19 +63,20 @@ public class PlayerScript : MonoBehaviour
 
     void drinkAlcohol() //Reduces alcohol level when press drink button
     {
-        if (Input.GetKey(drinkButton))
+        if (Input.GetKey(drinkButton) && liquidScript.liquidAmount > 0)
         {
             liquidScript.ReduceLiquid(drinkRate * Time.deltaTime);
             liquidScript.onScreen = true;
             moveSpeed = slowMoveSpeed; //Reduces movespeed by float while drinking
 
             drunkinessMechanic(); //Increases drunkeness float
-            animator.SetTrigger("drink"); //sets trigger for animation
+            animator.SetBool("isDrinking", true); //Plays animation
         }
         else
         {
             liquidScript.onScreen = false;
             moveSpeed = originalMoveSpeed; //Returns movespeed to original value while not drinking
+            animator.SetBool("isDrinking", false); //Doesn't play animation
         }
     }
 

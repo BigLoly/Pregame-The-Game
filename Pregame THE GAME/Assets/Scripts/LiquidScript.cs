@@ -13,7 +13,7 @@ public class LiquidScript : MonoBehaviour
     Vector2 startPos;
 
     [SerializeField] float maxLiquid = 100f; //Alcohol level of UI
-    [SerializeField] float liquidAmount = 100f;
+    public float liquidAmount = 100f;
 
     public bool onScreen = false; //For onscreen transitions
     [SerializeField] GameObject bottle;
