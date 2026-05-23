@@ -6,17 +6,19 @@ using UnityEngine.Splines.Interpolators;
 
 public class PlayerScript : MonoBehaviour
 {
-    [SerializeField] float moveSpeed; //User Interactions
+    [SerializeField] float moveSpeed; //Player Stats
     [SerializeField] float mouseSensitivity;
-    [SerializeField] KeyCode drinkButton;
-    [SerializeField] Transform cameraTransform;
-    [SerializeField] Transform playerTransform;
+    public float drunkinessLevel = 0f; //Public so animator controller can use this for blendtrees
+
+    [SerializeField] private KeyCode drinkButton; //User Interactions
+    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Transform playerTransform;
 
     public LiquidScript liquidScript; //liquidScript
-    [SerializeField] float drinkRate;
+    [SerializeField] private float drinkRate;
 
-    float originalMoveSpeed;
-    float slowMoveSpeed;
+    public event Action drinking; //For animations
+    [SerializeField] private Animator animator;
 
     private void Start()
     {
@@ -25,6 +27,8 @@ public class PlayerScript : MonoBehaviour
         slowMoveSpeed = originalMoveSpeed * .50f;
     }
 
+    float originalMoveSpeed;
+    float slowMoveSpeed;
     void move()
     {
         float x = Input.GetAxis("Horizontal");
@@ -39,6 +43,9 @@ public class PlayerScript : MonoBehaviour
 
         Vector3 direction = forward * z + right * x;
         transform.position += direction * moveSpeed * Time.deltaTime;
+
+        animator.SetFloat("velocity", new Vector3 (direction.x, 0, direction.z).magnitude); //Sets isMoving float in anim controller
+
     } //Simple WASD movement
 
     void rotate()
@@ -60,12 +67,23 @@ public class PlayerScript : MonoBehaviour
             liquidScript.ReduceLiquid(drinkRate * Time.deltaTime);
             liquidScript.onScreen = true;
             moveSpeed = slowMoveSpeed; //Reduces movespeed by float while drinking
+
+            drunkinessMechanic(); //Increases drunkeness float
+            animator.SetTrigger("drink"); //sets trigger for animation
         }
         else
         {
             liquidScript.onScreen = false;
             moveSpeed = originalMoveSpeed; //Returns movespeed to original value while not drinking
         }
+    }
+
+    public float drunkinessMechanic()
+    {
+        drunkinessLevel += drinkRate * Time.deltaTime;
+        float normalizedDrunkLevel = drunkinessLevel / 100; // divide by 100 to normalize float to 0-1 scale.
+        animator.SetFloat("drunkiness", normalizedDrunkLevel);
+        return normalizedDrunkLevel; 
     }
 
     void cursorLock()
