@@ -40,12 +40,11 @@ public class PlayerScript : MonoBehaviour
         forward.Normalize();
         right.Normalize();
 
-        Vector3 Rawdirection = (forward * z + right * x);
-        Vector3 direction = Rawdirection.normalized;
+        Vector3 direction = (forward * z + right * x).normalized;
         transform.position += direction * moveSpeed * Time.deltaTime;
 
-        float velocityMagnitude = Mathf.Clamp01(Rawdirection.magnitude);
-        animator.SetFloat("velocity", velocityMagnitude); //Sets isMoving float in anim controller
+        animator.SetFloat("moveX", x); //Sets floats in animator controller
+        animator.SetFloat("moveZ", z); //ANIMATIOR CONTROLLER CAN BE POLISHED WITH LEFT AND RIGHT WALKING ANIMATIONS
 
     } //Simple WASD movement
 
@@ -94,11 +93,34 @@ public class PlayerScript : MonoBehaviour
         Cursor.visible = false;
     } //Centers cursor into middle of screen always
 
+    void cursorUnlock()
+    {
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+
+    void pauseGame() //Press escape to pause/resume game
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (GameManagerScript.instance.GetGameState() == GameManagerScript.GameState.Paused) //If in pause menu and press escape again it exits back to playing state
+            {
+                cursorLock();
+                GameManagerScript.instance.SetState(GameManagerScript.GameState.Playing);
+            }
+            else
+            {
+                cursorUnlock();
+                GameManagerScript.instance.SetState(GameManagerScript.GameState.Paused); //Else it pauses game
+            }
+        }
+    }
 
     void Update()
     {
         move();
         rotate();
         drinkAlcohol();
+        pauseGame();
     }
 }

@@ -39,6 +39,11 @@ public class LiquidScript : MonoBehaviour
         {
             bottle.transform.DOLocalMove(inactivePOS, easeTime).SetEase(Ease.OutCirc);
         }
+
+        if (liquidAmount <= 0) // If theres no more alcohol to drink makes UI inactive
+        {
+            gameObject.SetActive(false);
+        }
     }
 
     public void ReduceLiquid(float amount) //Public function to reduce liquid
