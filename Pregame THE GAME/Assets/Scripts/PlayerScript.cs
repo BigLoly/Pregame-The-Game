@@ -8,13 +8,13 @@ public class PlayerScript : MonoBehaviour
 {
     [SerializeField] float moveSpeed; //Player Stats
     [SerializeField] float mouseSensitivity;
-    [SerializeField] float drunkinessLevel = 0f; //Public so animator controller can use this for blendtrees
+    public float drunkinessLevel = 0f;
 
     [SerializeField] KeyCode drinkButton; //User Interactions
     [SerializeField] Transform cameraTransform;
     [SerializeField] Transform playerTransform;
 
-    public LiquidScript liquidScript; //liquidScript found in canvas > AlcoholMeter
+    public LiquidScript liquidScript; //liquidScript found in canvas -> AlcoholMeter
     [SerializeField] float drinkRate;
 
     [SerializeField] Animator animator; //For animations
@@ -79,12 +79,12 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    public float drunkinessMechanic()
+    void drunkinessMechanic()
     {
         drunkinessLevel += drinkRate * Time.deltaTime;
         float normalizedDrunkLevel = drunkinessLevel / 100; // divide by 100 to normalize float to 0-1 scale.
         animator.SetFloat("drunkiness", normalizedDrunkLevel);
-        return normalizedDrunkLevel; 
+        GameManagerScript.instance.drunkFloat = normalizedDrunkLevel;
     }
 
     void cursorLock()

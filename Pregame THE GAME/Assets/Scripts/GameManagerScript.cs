@@ -1,3 +1,5 @@
+using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,9 +10,10 @@ public class GameManagerScript : MonoBehaviour
     private GameObject PauseUI;
     private GameObject GameOverUI;
     private GameObject WinUI;
+    public float drunkFloat = 0f;
 
     public enum GameState
-    { 
+    {
         MainMenu,
         Playing,
         Paused,
@@ -23,7 +26,7 @@ public class GameManagerScript : MonoBehaviour
     private void Awake()
     {
         if (instance != null && instance != this) //Makes sure theres only one GameManager when playing
-        { 
+        {
             Destroy(gameObject);
             return;
         }
@@ -37,7 +40,7 @@ public class GameManagerScript : MonoBehaviour
     }
 
     public void SetState(GameState newState)
-    { 
+    {
         CurrentState = newState;
 
         switch (newState)
@@ -68,14 +71,15 @@ public class GameManagerScript : MonoBehaviour
 
             case GameState.Win:
                 ResetElements();
+                gameWinUpdate();
                 WinUI.SetActive(true);
                 cursorUnlock();
                 break;
-        }    
+        }
     }
 
     public GameState GetGameState()
-    { 
+    {
         return CurrentState;
     }
 
@@ -103,5 +107,12 @@ public class GameManagerScript : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    void gameWinUpdate()
+    {
+        TextMeshProUGUI winText = WinUI.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
+        string message = $"You pregamed {drunkFloat*100:F0}% of the game!";
+        winText.text = message;
     }
 }
