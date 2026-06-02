@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 75cc5abff6275644e992675d3c77cce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Spawnable
-  radius: 9
+  radius: 12
 --- !u!64 &8792533474709856271
 MeshCollider:
   m_ObjectHideFlags: 0

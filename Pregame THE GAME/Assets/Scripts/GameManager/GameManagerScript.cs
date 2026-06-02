@@ -36,7 +36,11 @@ public class GameManagerScript : MonoBehaviour
 
     private void Start()
     {
-        SetState(GameState.MainMenu);
+        // cursorUnlock();
+        // GameUnfreeze();
+        // //SetState(GameState.MainMenu);
+        // SetState(CurrentState);]
+        StartGame();
     }
 
     public void SetState(GameState newState)
@@ -67,6 +71,7 @@ public class GameManagerScript : MonoBehaviour
                 ResetElements();
                 GameOverUI.SetActive(true);
                 cursorUnlock();
+                GameFreeze();
                 break;
 
             case GameState.Win:
@@ -109,10 +114,28 @@ public class GameManagerScript : MonoBehaviour
         Cursor.visible = true;
     }
 
+    void GameFreeze()
+    {
+        Time.timeScale = 0;
+    }
+    void GameUnfreeze()
+    {
+        Time.timeScale = 1;
+    }
+
+    public void StartGame()
+    {
+        Time.timeScale = 1f;
+        CurrentState = GameState.Playing;
+
+        SceneManager.LoadScene(playSceneID);
+    }
+
+
     void gameWinUpdate()
     {
         TextMeshProUGUI winText = WinUI.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
-        string message = $"You pregamed {drunkFloat*100:F0}% of the game!";
+        string message = $"You're {drunkFloat * 100:F0}% ready party at the cluuubbbb!";
         winText.text = message;
     }
 }
