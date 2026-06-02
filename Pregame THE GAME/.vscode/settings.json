@@ -67,5 +67,6 @@
         "*.sln": "*.csproj",
         "*.slnx": "*.csproj"
     },
-    "dotnet.defaultSolution": "Pregame THE GAME.slnx"
+    "dotnet.defaultSolution": "Pregame THE GAME.slnx",
+    "C_Cpp.intelliSenseEngine": "disabled"
 }
