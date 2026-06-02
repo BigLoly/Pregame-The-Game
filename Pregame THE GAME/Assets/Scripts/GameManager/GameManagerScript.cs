@@ -135,7 +135,7 @@ public class GameManagerScript : MonoBehaviour
     void gameWinUpdate()
     {
         TextMeshProUGUI winText = WinUI.transform.GetChild(0).GetChild(1).GetComponent<TextMeshProUGUI>();
-        string message = $"You pregamed {drunkFloat * 100:F0}% of the game!";
+        string message = $"You're {drunkFloat * 100:F0}% ready party at the cluuubbbb!";
         winText.text = message;
     }
 }
