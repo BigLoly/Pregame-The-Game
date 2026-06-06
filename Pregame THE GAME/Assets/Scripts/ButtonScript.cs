@@ -14,7 +14,8 @@ public class ButtonScript : MonoBehaviour
     }
     public void loadPlayScene()
     {
-        SceneManager.LoadScene(GameManagerScript.instance.playSceneID);
+        //SceneManager.LoadScene(GameManagerScript.instance.playSceneID);
+        GameManagerScript.instance.StartGame();
     }
 
     public void quitGame()
